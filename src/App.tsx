@@ -1,23 +1,18 @@
 import React, {useEffect} from 'react';
 import './App.css';
-import {Button, Form, Popconfirm, Tag} from "antd";
+import {Button, Col, Form, Input, Popconfirm, Row, Space, Tag} from "antd";
 import axios from "axios";
 import TextArea from "antd/lib/input/TextArea";
 
 const App = () => {
     const [isADBEnabled, setAdbEnabled] = React.useState(false)
     const [isStatusBarHide, setStatusBarHide] = React.useState(false)
-    const inputRef = React.useRef<any>(null)
-    const [text, setText] = React.useState("")
-    const shareProps = {
-        value: text,
-        ref: inputRef,
-        disabled: true
-    }
+    const [customCommand, setCustomCommand] = React.useState("")
+    const [customCommandResult, setCustomCommandResult] = React.useState("")
+
     useEffect(() => {
         axios.get("/api/adb").then(res => {
             setAdbEnabled(res.data.data.isEnabled)
-            setText(JSON.stringify(res.data))
         })
         axios.get("/api/statusBar").then(res => {
             setStatusBarHide(res.data.data.hide)
@@ -68,8 +63,28 @@ const App = () => {
                     < Button type="primary">点击重启平板</Button>
                 </Popconfirm>
             </Form.Item>
-            <Form.Item label="日志信息">
-                <TextArea {...shareProps}/>
+            <Form.Item label="执行自定义命令">
+                <Input.Group compact>
+                    <Input value={customCommand} onChange={e => setCustomCommand(e.target.value)}/>
+                    <Popconfirm title="确认执行" onConfirm={() => {
+                        axios.post("/api/exeCommand", {
+                            command: customCommand
+                        }).then(res => {
+                            setCustomCommandResult(res.data.data)
+                        })
+                    }}>
+                        <Button>点击执行命令</Button>
+                    </Popconfirm>
+                </Input.Group>
+            </Form.Item>
+            <Form.Item label={"自定义命令输出"}>
+                <Col span={16}>
+                    <Input.Group compact>
+                        <Button onClick={() => setCustomCommandResult("")}> Clear </Button>
+                        <TextArea value={customCommandResult} disabled/>
+                    </Input.Group>
+                </Col>
+
             </Form.Item>
         </Form>
     );
