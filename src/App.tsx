@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import './App.css';
-import {Button, Col, Form, Input, Popconfirm, Row, Space, Tag} from "antd";
+import {Button, Col, Form, Image, Input, Popconfirm, Row, Tag} from "antd";
+import {UpCircleTwoTone, LeftCircleTwoTone, DownCircleTwoTone, RightCircleTwoTone} from "@ant-design/icons"
 import axios from "axios";
 import TextArea from "antd/lib/input/TextArea";
 
@@ -9,9 +10,10 @@ const App = () => {
     const [isStatusBarHide, setStatusBarHide] = React.useState(false)
     const [customCommand, setCustomCommand] = React.useState("")
     const [customCommandResult, setCustomCommandResult] = React.useState("")
-
+    const [baseUrl, setBaseUrl] = React.useState("")
     useEffect(() => {
-        axios.get("/api/adb").then(res => {
+        axios.get("/api/adb"
+        ).then(res => {
             setAdbEnabled(res.data.data.isEnabled)
         })
         axios.get("/api/statusBar").then(res => {
@@ -20,8 +22,98 @@ const App = () => {
     })
     return (
         <Form
+            style={{marginTop: "20px"}}
             labelCol={{span: 8}}
             autoComplete="off">
+            <Form.Item label={"实时画面(仅查看)"}>
+                <Image src={"http://10.0.4.15:8081/stream.mjpeg"}/>
+            </Form.Item>
+            <Form.Item label={"操作按钮"}>
+                <Button onClick={() => {
+                    axios.post("/api/exeCommand", {
+                        command: "sudo input keyevent 4"
+                    }).then()
+                }}>Back</Button>
+                <Button onClick={() => {
+                    axios.post("/api/exeCommand", {
+                        command: "sudo input keyevent 3"
+                    }).then()
+                }}>Home</Button>
+                <Button onClick={() => {
+                    axios.post("/api/exeCommand", {
+                        command: "sudo input keyevent 187"
+                    }).then()
+                }}>Recent Tasks</Button>
+            </Form.Item>
+            <Form.Item label={"模拟滑动"}>
+                <Row>
+                    <Button icon={<UpCircleTwoTone/>} style={{
+                        width: "120px",
+                        marginLeft: "120px"
+                    }} onClick={() => {
+                        axios.post("/api/exeCommand", {
+                            command: "sudo input swipe 200 900 200 300"
+                        }).then()
+                    }}>Swipe Up</Button>
+                </Row>
+                <Row>
+                    <Button icon={<LeftCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
+                        axios.post("/api/exeCommand", {
+                            command: "sudo input swipe 500 200 100 200"
+                        }).then()
+                    }}>Swipe Left</Button>
+                    <Button icon={<DownCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
+                        axios.post("/api/exeCommand", {
+                            command: "sudo input swipe 200 300 200 800"
+                        }).then()
+                    }}>Swipe Down</Button>
+                    <Button icon={<RightCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
+                        axios.post("/api/exeCommand", {
+                            command: "sudo input swipe 100 200 500 200"
+                        }).then()
+                    }}>Swipe Right</Button>
+                </Row>
+            </Form.Item>
+            <Form.Item label={"方向按键"}>
+                <Row>
+                    <Button icon={<UpCircleTwoTone/>} style={{
+                        width: "120px",
+                        marginLeft: "120px"
+                    }} onClick={() => {
+                        axios.post("/api/exeCommand", {
+                            command: "sudo input keyevent 19"
+                        }).then()
+                    }}>Dpad Up</Button>
+                </Row>
+                <Row>
+                    <Button icon={<LeftCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
+                        axios.post("/api/exeCommand", {
+                            command: "sudo input keyevent 21"
+                        }).then()
+                    }}>Dpad Left</Button>
+                    <Button icon={<DownCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
+                        axios.post("/api/exeCommand", {
+                            command: "sudo input keyevent 20"
+                        }).then()
+                    }}>Dpad Down</Button>
+                    <Button icon={<RightCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
+                        axios.post("/api/exeCommand", {
+                            command: "sudo input keyevent 22"
+                        }).then()
+                    }}>Dpad Right</Button>
+                </Row>
+            </Form.Item>
+            <Form.Item label={"服务器URL"}>
+                <Input.Group compact>
+                    <Input style={{width: 'calc( 100% - 200px)'}} value={baseUrl}
+                           onChange={(e) => {
+                               setBaseUrl(e.target.value)
+                           }}/>
+                    <Button type={"primary"} onClick={() => {
+                        axios.defaults.baseURL = baseUrl
+                    }}>Submit</Button>
+                </Input.Group>
+            </Form.Item>
             <Form.Item label="远程 ABD 状态">
                 {isADBEnabled ?
                     <Tag color={"success"}>已开启</Tag>
