@@ -13,6 +13,8 @@ const App = () => {
     const [baseUrl, setBaseUrl] = React.useState("https://tablet.ss.devwu.com:8443")
     useEffect(() => {
         axios.defaults.baseURL = baseUrl
+    }, [baseUrl])
+    useEffect(() => {
         axios.get("/api/adb"
         ).then(res => {
             setAdbEnabled(res.data.data)
@@ -20,7 +22,7 @@ const App = () => {
         axios.get("/api/statusBar").then(res => {
             setStatusBarHide(!res.data.data)
         })
-    })
+    }, [])
     return (
         <Form
             style={{marginTop: "20px"}}
