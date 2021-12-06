@@ -10,8 +10,9 @@ const App = () => {
     const [isStatusBarHide, setStatusBarHide] = React.useState(false)
     const [customCommand, setCustomCommand] = React.useState("")
     const [customCommandResult, setCustomCommandResult] = React.useState("")
-    const [baseUrl, setBaseUrl] = React.useState("")
+    const [baseUrl, setBaseUrl] = React.useState("10.0.6.19")
     useEffect(() => {
+        axios.defaults.baseURL = "http://" + baseUrl + ":8081"
         axios.get("/api/adb"
         ).then(res => {
             setAdbEnabled(res.data.data.isEnabled)
@@ -25,8 +26,19 @@ const App = () => {
             style={{marginTop: "20px"}}
             labelCol={{span: 8}}
             autoComplete="off">
+            <Form.Item label={"服务器 IP"}>
+                <Input.Group compact>
+                    <Input style={{width: 'calc( 100% - 200px)'}} value={baseUrl}
+                           onChange={(e) => {
+                               setBaseUrl(e.target.value)
+                           }}/>
+                    <Button type={"primary"} onClick={() => {
+                        axios.defaults.baseURL = "http://" + baseUrl + ":8081"
+                    }}>Submit</Button>
+                </Input.Group>
+            </Form.Item>
             <Form.Item label={"实时画面(仅查看)"}>
-                <Image src={"http://10.0.4.15:8081/stream.mjpeg"}/>
+                <Image src={"http://" + baseUrl + ":8080/stream.mjpeg"}/>
             </Form.Item>
             <Form.Item label={"操作按钮"}>
                 <Button onClick={() => {
@@ -103,17 +115,7 @@ const App = () => {
                     }}>Dpad Right</Button>
                 </Row>
             </Form.Item>
-            <Form.Item label={"服务器URL"}>
-                <Input.Group compact>
-                    <Input style={{width: 'calc( 100% - 200px)'}} value={baseUrl}
-                           onChange={(e) => {
-                               setBaseUrl(e.target.value)
-                           }}/>
-                    <Button type={"primary"} onClick={() => {
-                        axios.defaults.baseURL = baseUrl
-                    }}>Submit</Button>
-                </Input.Group>
-            </Form.Item>
+
             <Form.Item label="远程 ABD 状态">
                 {isADBEnabled ?
                     <Tag color={"success"}>已开启</Tag>
