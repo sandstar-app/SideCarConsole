@@ -66,24 +66,24 @@ const App = () => {
                         marginLeft: "120px"
                     }} onClick={() => {
                         axios.post("/api/execCommand", {
-                            commandList: ["su","-c","input swipe 200 900 200 300"]
+                            commandList: ["su", "-c", "input swipe 200 900 200 300"]
                         }).then()
                     }}>Swipe Up</Button>
                 </Row>
                 <Row>
                     <Button icon={<LeftCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
                         axios.post("/api/execCommand", {
-                            commandList: ["su","-c","input swipe 500 200 100 200"]
+                            commandList: ["su", "-c", "input swipe 500 200 100 200"]
                         }).then()
                     }}>Swipe Left</Button>
                     <Button icon={<DownCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
                         axios.post("/api/execCommand", {
-                            commandList: ["su","-c","input swipe 200 300 200 800"]
+                            commandList: ["su", "-c", "input swipe 200 300 200 800"]
                         }).then()
                     }}>Swipe Down</Button>
                     <Button icon={<RightCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
                         axios.post("/api/execCommand", {
-                            commandList: ["su","-c","input swipe 100 200 500 200"]
+                            commandList: ["su", "-c", "input swipe 100 200 500 200"]
                         }).then()
                     }}>Swipe Right</Button>
                 </Row>
@@ -95,24 +95,24 @@ const App = () => {
                         marginLeft: "120px"
                     }} onClick={() => {
                         axios.post("/api/execCommand", {
-                            commandList: ["su","-c","input keyevent 19"]
+                            commandList: ["su", "-c", "input keyevent 19"]
                         }).then()
                     }}>Dpad Up</Button>
                 </Row>
                 <Row>
                     <Button icon={<LeftCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
                         axios.post("/api/execCommand", {
-                            commandList: ["su","-c","input keyevent 21"]
+                            commandList: ["su", "-c", "input keyevent 21"]
                         }).then()
                     }}>Dpad Left</Button>
                     <Button icon={<DownCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
                         axios.post("/api/execCommand", {
-                            commandList: ["su","-c","input keyevent 20"]
+                            commandList: ["su", "-c", "input keyevent 20"]
                         }).then()
                     }}>Dpad Down</Button>
                     <Button icon={<RightCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
                         axios.post("/api/execCommand", {
-                            commandList: ["su","-c","input keyevent 22"]
+                            commandList: ["su", "-c", "input keyevent 22"]
                         }).then()
                     }}>Dpad Right</Button>
                 </Row>
