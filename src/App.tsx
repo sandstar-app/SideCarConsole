@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import './App.css';
-import {Button, Col, Form, Image, Input, Popconfirm, Row, Tag} from "antd";
+import {Button, Col, Form, Input, Popconfirm, Row, Tag} from "antd";
 import {UpCircleTwoTone, LeftCircleTwoTone, DownCircleTwoTone, RightCircleTwoTone} from "@ant-design/icons"
 import axios from "axios";
 import TextArea from "antd/lib/input/TextArea";
@@ -10,15 +10,15 @@ const App = () => {
     const [isStatusBarHide, setStatusBarHide] = React.useState(false)
     const [customCommand, setCustomCommand] = React.useState("")
     const [customCommandResult, setCustomCommandResult] = React.useState("")
-    const [baseUrl, setBaseUrl] = React.useState("10.0.6.19")
+    const [baseUrl, setBaseUrl] = React.useState("https://tablet.ss.devwu.com:8443")
     useEffect(() => {
-        axios.defaults.baseURL = "http://" + baseUrl + ":8081"
+        axios.defaults.baseURL = baseUrl
         axios.get("/api/adb"
         ).then(res => {
-            setAdbEnabled(res.data.data.isEnabled)
+            setAdbEnabled(res.data.data)
         })
         axios.get("/api/statusBar").then(res => {
-            setStatusBarHide(res.data.data.hide)
+            setStatusBarHide(!res.data.data)
         })
     })
     return (
@@ -33,27 +33,27 @@ const App = () => {
                                setBaseUrl(e.target.value)
                            }}/>
                     <Button type={"primary"} onClick={() => {
-                        axios.defaults.baseURL = "http://" + baseUrl + ":8081"
+                        axios.defaults.baseURL = baseUrl
                     }}>Submit</Button>
                 </Input.Group>
             </Form.Item>
-            <Form.Item label={"实时画面(仅查看)"}>
-                <Image src={"http://" + baseUrl + ":8080/stream.mjpeg"}/>
-            </Form.Item>
+            {/*<Form.Item label={"实时画面(仅查看)"}>*/}
+            {/*    <Image src={"http://" + baseUrl + ":8080/stream.mjpeg"}/>*/}
+            {/*</Form.Item>*/}
             <Form.Item label={"操作按钮"}>
                 <Button onClick={() => {
-                    axios.post("/api/exeCommand", {
-                        command: "sudo input keyevent 4"
+                    axios.post("/api/execCommand", {
+                        commandList: ["su", "-c", "input keyevent 4"]
                     }).then()
                 }}>Back</Button>
                 <Button onClick={() => {
-                    axios.post("/api/exeCommand", {
-                        command: "sudo input keyevent 3"
+                    axios.post("/api/execCommand", {
+                        commandList: ["su", "-c", "input keyevent 3"]
                     }).then()
                 }}>Home</Button>
                 <Button onClick={() => {
-                    axios.post("/api/exeCommand", {
-                        command: "sudo input keyevent 187"
+                    axios.post("/api/execCommand", {
+                        commandList: ["su", "-c", "input keyevent 187"]
                     }).then()
                 }}>Recent Tasks</Button>
             </Form.Item>
@@ -63,25 +63,25 @@ const App = () => {
                         width: "120px",
                         marginLeft: "120px"
                     }} onClick={() => {
-                        axios.post("/api/exeCommand", {
-                            command: "sudo input swipe 200 900 200 300"
+                        axios.post("/api/execCommand", {
+                            commandList: ["su","-c","input swipe 200 900 200 300"]
                         }).then()
                     }}>Swipe Up</Button>
                 </Row>
                 <Row>
                     <Button icon={<LeftCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
-                        axios.post("/api/exeCommand", {
-                            command: "sudo input swipe 500 200 100 200"
+                        axios.post("/api/execCommand", {
+                            commandList: ["su","-c","input swipe 500 200 100 200"]
                         }).then()
                     }}>Swipe Left</Button>
                     <Button icon={<DownCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
-                        axios.post("/api/exeCommand", {
-                            command: "sudo input swipe 200 300 200 800"
+                        axios.post("/api/execCommand", {
+                            commandList: ["su","-c","input swipe 200 300 200 800"]
                         }).then()
                     }}>Swipe Down</Button>
                     <Button icon={<RightCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
-                        axios.post("/api/exeCommand", {
-                            command: "sudo input swipe 100 200 500 200"
+                        axios.post("/api/execCommand", {
+                            commandList: ["su","-c","input swipe 100 200 500 200"]
                         }).then()
                     }}>Swipe Right</Button>
                 </Row>
@@ -92,25 +92,25 @@ const App = () => {
                         width: "120px",
                         marginLeft: "120px"
                     }} onClick={() => {
-                        axios.post("/api/exeCommand", {
-                            command: "sudo input keyevent 19"
+                        axios.post("/api/execCommand", {
+                            commandList: ["su","-c","input keyevent 19"]
                         }).then()
                     }}>Dpad Up</Button>
                 </Row>
                 <Row>
                     <Button icon={<LeftCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
-                        axios.post("/api/exeCommand", {
-                            command: "sudo input keyevent 21"
+                        axios.post("/api/execCommand", {
+                            commandList: ["su","-c","input keyevent 21"]
                         }).then()
                     }}>Dpad Left</Button>
                     <Button icon={<DownCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
-                        axios.post("/api/exeCommand", {
-                            command: "sudo input keyevent 20"
+                        axios.post("/api/execCommand", {
+                            commandList: ["su","-c","input keyevent 20"]
                         }).then()
                     }}>Dpad Down</Button>
                     <Button icon={<RightCircleTwoTone/>} style={{width: "120px"}} onClick={() => {
-                        axios.post("/api/exeCommand", {
-                            command: "sudo input keyevent 22"
+                        axios.post("/api/execCommand", {
+                            commandList: ["su","-c","input keyevent 22"]
                         }).then()
                     }}>Dpad Right</Button>
                 </Row>
@@ -124,8 +124,10 @@ const App = () => {
             <Form.Item label="ADB 开关">
                 <Popconfirm title={isADBEnabled ? "关闭 ADB" : "开启 ADB"}
                             onConfirm={() => {
-                                axios.post("/api/adb", {
-                                    "isAdbOpen": !isADBEnabled
+                                axios.post("/api/adb", null, {
+                                    params: {
+                                        enable: !isADBEnabled
+                                    }
                                 }).then(res => {
                                     setAdbEnabled(res.data.data.isEnabled)
                                 })
@@ -143,17 +145,17 @@ const App = () => {
                             onConfirm={() => {
                                 axios.post("/api/statusBar", null, {
                                     params: {
-                                        hide: !isStatusBarHide
+                                        hidden: !isStatusBarHide
                                     }
                                 }).then(res => {
-                                    setStatusBarHide(res.data.data.hide)
+                                    setStatusBarHide(!res.data.data)
                                 })
                             }}>
                     <Button type="primary">{isStatusBarHide ? "点击显示状态栏" : "点击隐藏状态栏"}</Button>
                 </Popconfirm>
             </Form.Item>
             <Form.Item label="远程重启">
-                <Popconfirm title="确定要重启吗？" onConfirm={() => axios.post("/api/reboot")}>
+                <Popconfirm title="确定要重启吗？" onConfirm={() => axios.get("/api/reboot")}>
                     < Button type="primary">点击重启平板</Button>
                 </Popconfirm>
             </Form.Item>
@@ -161,8 +163,8 @@ const App = () => {
                 <Input.Group compact>
                     <Input value={customCommand} onChange={e => setCustomCommand(e.target.value)}/>
                     <Popconfirm title="确认执行" onConfirm={() => {
-                        axios.post("/api/exeCommand", {
-                            command: customCommand
+                        axios.post("/api/execCommand", {
+                            commandList: customCommand
                         }).then(res => {
                             setCustomCommandResult(res.data.data)
                         })
